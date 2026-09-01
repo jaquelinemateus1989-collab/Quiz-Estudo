@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluidos Espirituais e Obsessão — Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #15141f;
+    --bg-panel: #1c1b29;
+    --line: #322f45;
+    --ink: #ece8de;
+    --ink-dim: #a29cc2;
+    --gold: #c9a15f;
+    --gold-soft: rgba(201,161,95,0.14);
+    --good: #7c9d7a;
+    --good-bg: rgba(124,157,122,0.14);
+    --bad: #b06a5c;
+    --bad-bg: rgba(176,106,92,0.14);
+    --radius: 3px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(201,161,95,0.08), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 18px;
+    line-height:1.5;
+  }
+  .stage{
+    width:100%;
+    max-width: 620px;
+  }
+  .masthead{
+    text-align:center;
+    margin-bottom: 28px;
+  }
+  .masthead .kicker{
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+  .masthead h1{
+    font-family:'Crimson Pro', serif;
+    font-weight:500;
+    font-size: 30px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .masthead h1 em{
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .panel{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 36px 34px 30px;
+    position: relative;
+    overflow:hidden;
+  }
+  @media (max-width:520px){
+    .panel{ padding: 26px 20px 22px; }
+  }
+
+  .progress-track{
+    height: 2px;
+    width: 100%;
+    background: var(--line);
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .progress-fill{
+    height: 2px;
+    background: var(--gold);
+    width: 10%;
+    transition: width 0.4s ease;
+  }
+
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+  .meta-row .count{ font-variant-numeric: tabular-nums; }
+  .meta-row .topic{
+    font-family:'Crimson Pro', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  .prompt{
+    font-family:'Crimson Pro', serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0 0 26px;
+    color: var(--ink);
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+  }
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap: 14px;
+    text-align:left;
+    width:100%;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    padding: 14px 16px;
+    font-family:'Work Sans', sans-serif;
+    font-size: 15px;
+    cursor:pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .option:hover:not(:disabled){
+    border-color: var(--gold);
+    background: var(--gold-soft);
+  }
+  .option:disabled{ cursor:default; }
+  .option .letter{
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--ink-dim);
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 12px;
+    color: var(--ink-dim);
+    transition: all 0.15s ease;
+  }
+  .option .text{ padding-top: 1px; }
+
+  .option.correct{
+    border-color: var(--good);
+    background: var(--good-bg);
+  }
+  .option.correct .letter{
+    border-color: var(--good);
+    color: var(--good);
+    background: var(--bg-panel);
+  }
+  .option.incorrect{
+    border-color: var(--bad);
+    background: var(--bad-bg);
+  }
+  .option.incorrect .letter{
+    border-color: var(--bad);
+    color: var(--bad);
+  }
+  .option.dim{ opacity: 0.45; }
+
+  .explanation{
+    margin-top: 20px;
+    padding: 16px 18px;
+    border-left: 2px solid var(--gold);
+    background: rgba(201,161,95,0.06);
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+    display:none;
+  }
+  .explanation.show{ display:block; }
+  .explanation strong{ color: var(--ink); font-weight:600; }
+
+  .nav-row{
+    display:flex;
+    justify-content:flex-end;
+    margin-top: 24px;
+  }
+  .next-btn{
+    background: var(--gold);
+    color: #1c1710;
+    border: none;
+    border-radius: var(--radius);
+    padding: 11px 22px;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size: 14px;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity 0.2s ease;
+  }
+  .next-btn.show{ opacity:1; pointer-events:auto; }
+  .next-btn:hover{ background:#dbb56f; }
+
+  /* result screen */
+  .result{ text-align:center; }
+  .result .score-num{
+    font-family:'Crimson Pro', serif;
+    font-size: 64px;
+    font-weight:500;
+    color: var(--gold);
+    line-height:1;
+    margin: 6px 0 2px;
+  }
+  .result .score-label{
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 20px;
+  }
+  .result .category{
+    font-family:'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .result .category-desc{
+    font-size: 14px;
+    color: var(--ink-dim);
+    max-width: 440px;
+    margin: 0 auto 28px;
+    line-height:1.6;
+  }
+  .review-list{
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+  .review-item{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .review-item .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+  }
+  .review-item.ok .dot{ background: var(--good); }
+  .review-item.no .dot{ background: var(--bad); }
+  .review-item .q-num{ color: var(--ink); font-weight:600; }
+
+  .restart-btn{
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: var(--radius);
+    padding: 11px 24px;
+    font-family:'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor:pointer;
+    transition: background 0.15s ease;
+  }
+  .restart-btn:hover{ background: var(--gold-soft); }
+
+  .footer-note{
+    text-align:center;
+    font-size: 12px;
+    color: var(--ink-dim);
+    opacity: 0.6;
+    margin-top: 22px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="masthead">
+    <div class="kicker">CODIFICAÇÃO ESPÍRITA</div>
+    <h1>Fluidos, Perispírito e <em>Obsessão</em></h1>
+  </div>
+
+  <div class="panel">
+    <div id="quizView">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="meta-row">
+        <span class="count" id="counter">Pergunta 1 de 10</span>
+        <span class="topic" id="topicLabel"></span>
+      </div>
+      <p class="prompt" id="promptText"></p>
+      <div class="options" id="optionsContainer"></div>
+      <div class="explanation" id="explanationBox"></div>
+      <div class="nav-row">
+        <button class="next-btn" id="nextBtn">Próxima pergunta</button>
+      </div>
+    </div>
+
+    <div id="resultView" class="result" style="display:none;">
+      <div class="score-label">Você acertou</div>
+      <div class="score-num"><span id="scoreVal">0</span>/10</div>
+      <div class="category" id="resultCategory"></div>
+      <p class="category-desc" id="resultDesc"></p>
+      <div class="review-list" id="reviewList"></div>
+      <button class="restart-btn" id="restartBtn">Refazer o quiz</button>
+    </div>
+  </div>
+
+  <div class="footer-note">Baseado no Livro dos Médiuns, A Gênese e obras subsidiárias sobre obsessão espiritual</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    topic: "Fluidos Espirituais",
+    prompt: "Segundo o Livro dos Médiuns, qual é o papel dos fluidos nas interações espirituais e de que forma eles são modificados?",
+    options: [
+      "Eles são imutáveis e servem apenas como uma barreira física que impede o contato entre os dois planos.",
+      "Eles são modificados pelo pensamento e pela vontade, permitindo a ação do Espírito sobre a matéria e sobre outros seres.",
+      "Eles são substâncias geradas exclusivamente por espíritos puros para curar doenças orgânicas.",
+      "Eles funcionam apenas durante o fenômeno de efeitos físicos ostensivos, sumindo no dia a dia."
+    ],
+    correct: 1,
+    explanation: "O documento aponta que os fluidos são os elementos condutores das interações. Eles ganham qualidades, boas ou ruins, a partir da força motriz do pensamento."
+  },
+  {
+    topic: "Pensamento e Sintonia",
+    prompt: "O texto conceitua o pensamento como uma 'Força Motriz'. Qual é a consequência direta de nutrir pensamentos e sentimentos negativos recorrentes?",
+    options: [
+      "A atração automática de mentores espirituais para aliviar o sofrimento por autopiedade.",
+      "O isolamento total do indivíduo, impossibilitando qualquer conexão fluídica externa.",
+      "A criação de afinidade vibratória com espíritos de mesma frequência, facilitando o processo obsessivo.",
+      "A destruição imediata e irreversível do corpo físico por choque magnético."
+    ],
+    correct: 2,
+    explanation: "Os pensamentos negativos emitem ondas que encontram ressonância em entidades que sintonizam na mesma faixa vibratória, abrindo as portas para a obsessão."
+  },
+  {
+    topic: "Plasticidade do Perispírito",
+    prompt: "No plano espiritual, o perispírito demonstra propriedades plásticas. O que determina a aparência exteriorizada do corpo sutil de um espírito desencarnado nas regiões inferiores?",
+    options: [
+      "O último vestuário material utilizado pelo corpo físico antes do sepultamento.",
+      "A imposição arbitrária dos benfeitores espirituais como forma de punição pedagógica.",
+      "O reflexo de seus próprios pensamentos, impulsos degradados, sintonias e fixações mentais.",
+      "Uma escolha consciente do próprio espírito para se camuflar no ambiente das sombras."
+    ],
+    correct: 2,
+    explanation: "O perispírito molda-se ao estado íntimo da alma. Sentimentos de ódio crônico, sadismo e animalização moral geram deformações perispirituais visíveis."
+  },
+  {
+    topic: "Mecanismo de Acoplamento",
+    prompt: "De acordo com o trecho de A Gênese citado no documento, como o espírito obsessor atua diretamente sobre o encarnado para constrangê-lo a agir contra a própria vontade?",
+    options: [
+      "Introduzindo-se fisicamente no cérebro biológico e destruindo os neurônios do córtex frontal.",
+      "Identificando e enlaçando o perispírito do encarnado com o seu próprio, criando uma teia fluídica de controle.",
+      "Cortando o cordão de prata que une a alma ao corpo físico durante o estado de vigília.",
+      "Utilizando objetos materiais do ambiente para magnetizar a atmosfera da casa da vítima."
+    ],
+    correct: 1,
+    explanation: "O obsessor atua externamente por projeção fluídica. Ele sintoniza e envolve o perispírito da vítima, o que restringe sua autonomia."
+  },
+  {
+    topic: "Engenharia das Sombras",
+    prompt: "As estruturas fluídicas densas (teias, cadeias e muros) que isolam a vítima e bloqueiam preces são construídas com qual matéria-prima?",
+    options: [
+      "Matéria física condensada retirada de cemitérios e necrópoles durante a noite.",
+      "Pensamentos negativos e fluidos densos gerados tanto pelos perseguidores quanto pela própria vítima.",
+      "Plasma puramente ilusório que não tem efeito real sobre o campo áurico do encarnado.",
+      "Energia eletromagnética gerada por aparelhos tecnológicos da medicina da Terra."
+    ],
+    correct: 1,
+    explanation: "Essas prisões fluídicas são verdadeiras construções de engenharia mental, sustentadas pela energia de quem persegue e alimentadas pela própria sintonia densa de quem sofre."
+  },
+  {
+    topic: "Ovoidização e Energia",
+    prompt: "O processo de regressão mental que transforma um espírito em 'ovoide' ocorre devido a uma 'monoidéia intensa'. Qual é o impacto disso em sua estrutura perispiritual?",
+    options: [
+      "O perispírito se expande tanto que se funde com o fluido cósmico universal, perdendo os limites.",
+      "O espírito apaga sua própria identidade, reduz sua consciência e perde quase totalmente a forma humana original.",
+      "O corpo sutil cristaliza-se em uma armadura metálica impenetrável a qualquer tipo de passe.",
+      "Ocorre um rejuvenescimento biológico que força uma reencarnação compulsória imediata."
+    ],
+    correct: 1,
+    explanation: "A fixação extrema em uma única ideia destrutiva (como vingança ou culpa) faz com que o espírito perca a flexibilidade mental e a forma humana do seu corpo sutil, atrofiando o perispírito."
+  },
+  {
+    topic: "Vampirismo e Centros de Força",
+    prompt: "Por que os espíritos inclinados ao mal realizam o vampirismo energético sobre encarnados ou outros desencarnados?",
+    options: [
+      "Porque eles precisam de energia densa para conseguir reencarnar sem passar pelo planejamento cármico.",
+      "Porque não conseguem produzir ou acumular fluidos leves por si mesmos devido à sua baixa elevação moral.",
+      "Por mera diversão espiritual, já que possuem reservas infinitas de energia geradas pela revolta.",
+      "Para repassar essa energia aos mentores espirituais em troca de bônus-hora no plano espiritual."
+    ],
+    correct: 1,
+    explanation: "Espíritos endurecidos no sofrimento e no vício não vibram em faixas superiores que geram fluidos saudáveis. Eles dependem da absorção de fluidos alheios (raiva, medo, vícios) para manter sua sustentação energética."
+  },
+  {
+    topic: "Princípio da Equivalência",
+    prompt: "O documento cita uma máxima de Suely Caldas Schubert sobre a relação fluídica entre vivos e mortos. Qual é esse princípio fundamental?",
+    options: [
+      "O pensamento do encarnado é incapaz de afetar o plano espiritual, pois a matéria bloqueia o fluido.",
+      "O desencarnado sempre possui total soberania fluídica sobre qualquer encarnado, independentemente da sintonia.",
+      "O pensamento do encarnado age sobre os fluidos espirituais com a mesma força que o dos desencarnados.",
+      "Os fluidos espirituais só respondem a comandos quando o indivíduo está em transe mediúnico profundo."
+    ],
+    correct: 2,
+    explanation: "Esse princípio explica a modalidade de obsessão do Encarnado para o Desencarnado. A mente na matéria emite ondas com a mesma capacidade de retenção, atração ou sofrimento sobre o plano espiritual."
+  },
+  {
+    topic: "Reforma Íntima e Defesas",
+    prompt: "Por que o processo de autoconhecimento e modificação de hábitos íntimos é considerado indispensável na terapêutica espírita da obsessão?",
+    options: [
+      "Porque ele atua modificando o padrão vibratório do obsidiado, tornando-o incompatível com a influência negativa.",
+      "Porque a reforma íntima concede ao indivíduo poderes mágicos para repelir espíritos por meio da força física.",
+      "Porque o centro espírita exige essa mudança como condição comercial para aplicar os passes magnéticos.",
+      "Porque ela anula a mediunidade da pessoa de forma definitiva, impedindo qualquer percepção espiritual."
+    ],
+    correct: 0,
+    explanation: "Se o acesso do obsessor se dá pelas imperfeições e afinidades morais, a mudança interior quebra a ponte vibratória. Sem sintonia, o acoplamento fluídico se desfaz naturalmente."
+  },
+  {
+    topic: "Ação do Evangelho no Lar",
+    prompt: "Qual é o efeito prático da reunião do Evangelho no Lar sobre a atmosfera fluídica de uma residência sob influência espiritual densa?",
+    options: [
+      "Funciona como um ritual de exorcismo material que aprisiona os espíritos em objetos da casa.",
+      "Harmoniza o ambiente doméstico, elevando o padrão energético e afastando influências por renovação moral.",
+      "Isola magneticamente as paredes da casa de forma que nenhum pensamento consiga sair dali.",
+      "Transfere os obsessores automaticamente para a casa dos vizinhos por deslocamento de fluidos."
+    ],
+    correct: 1,
+    explanation: "O estudo do Evangelho e a prece sincera em família renovam os fluidos do ambiente. A elevação do padrão mental do lar atrai benfeitores espirituais e desfaz os campos fluídicos densos estabelecidos pelas sombras."
+  }
+];
+
+const LETTERS = ['A','B','C','D'];
+let current = 0;
+let score = 0;
+let answered = false;
+const userAnswers = [];
+
+const counter = document.getElementById('counter');
+const topicLabel = document.getElementById('topicLabel');
+const promptText = document.getElementById('promptText');
+const optionsContainer = document.getElementById('optionsContainer');
+const explanationBox = document.getElementById('explanationBox');
+const nextBtn = document.getElementById('nextBtn');
+const progressFill = document.getElementById('progressFill');
+const quizView = document.getElementById('quizView');
+const resultView = document.getElementById('resultView');
+
+function renderQuestion(){
+  answered = false;
+  const q = QUESTIONS[current];
+  counter.textContent = `Pergunta ${current + 1} de ${QUESTIONS.length}`;
+  topicLabel.textContent = q.topic;
+  promptText.textContent = q.prompt;
+  progressFill.style.width = `${((current) / QUESTIONS.length) * 100 + 5}%`;
+  explanationBox.classList.remove('show');
+  explanationBox.innerHTML = '';
+  nextBtn.classList.remove('show');
+
+  optionsContainer.innerHTML = '';
+  q.options.forEach((optText, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="letter">${LETTERS[idx]}</span><span class="text">${optText}</span>`;
+    btn.addEventListener('click', () => selectAnswer(idx));
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const correct = idx === q.correct;
+  if(correct) score++;
+  userAnswers.push(correct);
+
+  const opts = optionsContainer.querySelectorAll('.option');
+  opts.forEach((opt, i) => {
+    opt.disabled = true;
+    if(i === q.correct){
+      opt.classList.add('correct');
+    } else if(i === idx){
+      opt.classList.add('incorrect');
+    } else {
+      opt.classList.add('dim');
+    }
+  });
+
+  explanationBox.innerHTML = `<strong>${correct ? 'Correto. ' : 'Não é essa. '}</strong>${q.explanation}`;
+  explanationBox.classList.add('show');
+  nextBtn.classList.add('show');
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? 'Ver resultado' : 'Próxima pergunta';
+}
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+function getCategory(s){
+  if(s === 10) return { title: "Estudioso da Codificação", desc: "Domínio completo dos conceitos de fluidos, perispírito e obsessão apresentados no material." };
+  if(s >= 8) return { title: "Leitura Atenta", desc: "Boa compreensão dos mecanismos fluídicos e das defesas espirituais discutidos." };
+  if(s >= 6) return { title: "Em Aprofundamento", desc: "Os conceitos centrais foram absorvidos, mas vale revisar os pontos mais específicos." };
+  if(s >= 4) return { title: "Início de Jornada", desc: "Uma nova releitura do material pode consolidar melhor os conceitos apresentados." };
+  return { title: "Primeiro Contato", desc: "Recomenda-se revisar o material com calma antes de refazer o quiz." };
+}
+
+function showResult(){
+  quizView.style.display = 'none';
+  resultView.style.display = 'block';
+  document.getElementById('scoreVal').textContent = score;
+  const cat = getCategory(score);
+  document.getElementById('resultCategory').textContent = cat.title;
+  document.getElementById('resultDesc').textContent = cat.desc;
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  userAnswers.forEach((ok, i) => {
+    const item = document.createElement('div');
+    item.className = `review-item ${ok ? 'ok' : 'no'}`;
+    item.innerHTML = `<span class="dot"></span><span class="q-num">Q${i+1}.</span> <span>${QUESTIONS[i].topic}</span>`;
+    reviewList.appendChild(item);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  userAnswers.length = 0;
+  resultView.style.display = 'none';
+  quizView.style.display = 'block';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
